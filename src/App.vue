@@ -2,9 +2,10 @@
     <div id="app">
         <h2>请把图片左上角红小方块拖动到缺角出，尽量保证准确性</h2>
         <ul>
-            <li v-for="img in imgs">
-                <span @mousedown.prevent="down" @mousemove.prevent="move" @mouseup="up"></span>
+            <li v-for="(img, index) in imgs" :key="index">
+                <span @mousedown.prevent="down" @mousemove.prevent="move" @mouseup="up(index)"></span>
                 <img :src="img" alt="">
+                <a>确定</a>
             </li>
         </ul>
         <button @click="submit">提交</button>
@@ -22,6 +23,7 @@
         name: 'app',
         data(){
             return{
+                select:null,
                 isDown:false,
                 ObjLeft:0,
                 ObjTop:0,
@@ -48,19 +50,27 @@
                 this.posX = parseInt(this.mousePosition(event).x);
                 this.posY = parseInt(this.mousePosition(event).y);
             },
-            up(){
+            up(index){
+                this.select = index;
                 this.isDown = false;
-                this.positions.push(this.position)
+               /* console.log(index);
+                if ( this.select){
+                    this.positions.splice(this.select,1)
+                }*/
+                this.positions.push(this.position);
             },
             move(event){
                 if (this.isDown) {
                     var x = parseInt(parseInt(this.mousePosition(event).x) - this.posX + this.ObjLeft);
                     var y = parseInt(parseInt(this.mousePosition(event).y) - this.posY + this.ObjTop);
-                    var w = document.documentElement.clientWidth - event.target.offsetWidth;
-                    var h = document.documentElement.clientHeight - event.target.offsetHeight;
+                    var w = 320 - event.target.clientWidth;
+                    var h = 100 - event.target.clientHeight;
+                    /*var w = document.documentElement.clientWidth - event.target.offsetWidth;
+                    var h = document.documentElement.clientHeight - event.target.offsetHeight;*/
                     if (x < 0) {
                         x = 0
                     } else if (x > w) {
+
                         x = w
                     };
                     if (y < 0) {
@@ -95,7 +105,7 @@
         color: #2c3e50;
         margin-top: 60px;
         ul{
-            width: 1000px;
+            width: 800px;
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
@@ -110,6 +120,15 @@
                     height: 38px;
                     /*background-color: red;*/
                     background-color: rgba(224,42,30,0.8);
+                }
+                a{
+                    display: inline-block;
+                    text-align: center;
+                    width: 50px;
+                    height: 30px;
+                    line-height: 30px;
+                    background-color: #000;
+                    color: #fff;
                 }
             }
         }
